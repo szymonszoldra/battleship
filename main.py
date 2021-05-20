@@ -1,16 +1,40 @@
-# This is a sample Python script.
+import pygame
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+pygame.font.init()
+
+WIDTH = 900
+HEIGHT = 500
+
+# colors
+WHITE = (255, 255, 255)
+BACKGROUND_COLOR = (50, 50, 50)
+
+WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption('Battleship')
+
+FONT = pygame.font.SysFont('comicsans', 40)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def draw_window(text):
+    WINDOW.fill(BACKGROUND_COLOR)
+
+    display_text = FONT.render(text, True, WHITE)
+    WINDOW.blit(display_text,
+                (WIDTH // 2 - display_text.get_width() // 2, HEIGHT // 2 - display_text.get_height() // 2))
+    pygame.display.update()
 
 
-# Press the green button in the gutter to run the script.
+def main():
+    run = True
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        draw_window('Hello World')
+    pygame.quit()
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
