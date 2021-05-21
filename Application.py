@@ -1,33 +1,20 @@
 import pygame
-
-pygame.font.init()
-
-WIDTH = 900
-HEIGHT = 500
-FPS = 60
-
-# colors
-WHITE = (255, 255, 255)
-BACKGROUND_COLOR = (50, 50, 50)
-
-WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Battleship')
-
-FONT = pygame.font.SysFont('comicsans', 40)
+from Button import Button
+from constants.colors import WHITE, BACKGROUND_COLOR
+from constants.window import WIDTH, HEIGHT, FPS
+from constants.fonts import FONT
 
 
 class Application:
     def __init__(self):
-        pass
+        self._WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption('Battleship')
 
-    @staticmethod
-    def draw_window(text):
-        WINDOW.fill(BACKGROUND_COLOR)
-
+    def draw_window(self, text, btn):
+        self._WINDOW.fill(BACKGROUND_COLOR)
         display_text = FONT.render(text, True, WHITE)
-        WINDOW.blit(display_text,
-                    (WIDTH // 2 - display_text.get_width() // 2, HEIGHT // 2 - display_text.get_height() // 2))
-
+        self._WINDOW.blit(display_text,
+                          (WIDTH // 2 - display_text.get_width() // 2, HEIGHT // 2 - display_text.get_height() // 2))
         pygame.display.update()
 
     def run(self):
@@ -40,5 +27,5 @@ class Application:
                 if event.type == pygame.QUIT:
                     run = False
 
-            self.draw_window('Hello World')
+            self.draw_window('Hello World', btn)
         pygame.quit()
