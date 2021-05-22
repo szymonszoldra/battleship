@@ -1,24 +1,36 @@
 import pygame
 
-from constants.window import FPS, WIDTH, HEIGHT
+from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR
 
 from components.button import Button
+from components.field import Field
 
 
 class Game:
-    def __init__(self, window, difficulty: str):
+    def __init__(self, window, difficulty: str) -> None:
         self._WINDOW = window
         self._difficulty = difficulty
-        self._btn_restart = Button(BUTTON_COLOR, WIDTH // 3, HEIGHT - 80, 200, 80, 'Restart')
-        self._btn_quit = Button(BUTTON_COLOR, WIDTH // 3 * 2, HEIGHT - 80, 200, 80, 'Menu')
+        self._btn_restart = Button(BUTTON_COLOR, 400, HEIGHT - 80, 200, 80, 'Restart')
+        self._btn_quit = Button(BUTTON_COLOR, WIDTH - 400, HEIGHT - 80, 200, 80, 'Menu')
+        self._player_fields = [
+            Field(BACKGROUND_COLOR, 100 + i * FIELD_SIZE + FIELD_SIZE//2, 150 + j * FIELD_SIZE, FIELD_SIZE, FIELD_SIZE)
+            for i in range(10) for j in range(10)]
+        self._computer_fields = [
+            Field(BACKGROUND_COLOR, 900 + i * FIELD_SIZE + FIELD_SIZE//2, 150 + j * FIELD_SIZE, FIELD_SIZE, FIELD_SIZE)
+            for i in range(10) for j in range(10)]
 
-    def draw_buttons(self):
+    def draw_buttons(self) -> None:
         self._WINDOW.fill(BACKGROUND_COLOR)
         self._btn_restart.draw(self._WINDOW, font_size=30)
         self._btn_quit.draw(self._WINDOW, font_size=30)
+        for i in range(100):
+            self._player_fields[i].draw_init(self._WINDOW)
 
-        pygame.display.update()
+    def draw_init_fields(self) -> None:
+        for i in range(100):
+            self._player_fields[i].draw_init(self._WINDOW)
+            self._computer_fields[i].draw_init(self._WINDOW)
 
     def play(self) -> bool:
         run = True
@@ -43,3 +55,5 @@ class Game:
                     click = True
 
             self.draw_buttons()
+            self.draw_init_fields()
+            pygame.display.update()
