@@ -11,7 +11,7 @@ from screens.options import Options
 
 
 class Application:
-    def __init__(self):
+    def __init__(self) -> None:
         self._WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption('Battleship')
 
@@ -19,7 +19,7 @@ class Application:
         self._btn_options = Button(BUTTON_COLOR, WIDTH // 2, HEIGHT // 3 * 2, 200, 80, 'Options')
         self._btn_game = Button(BUTTON_COLOR, WIDTH // 2, HEIGHT // 3, 200, 80, 'Start')
 
-    def draw_window(self, text):
+    def draw_window(self, text: str) -> None:
         self._WINDOW.fill(BACKGROUND_COLOR)
         display_text = FONT.render(text, True, WHITE)
         self._WINDOW.blit(display_text,
@@ -29,20 +29,20 @@ class Application:
         self._btn_game.draw(self._WINDOW, font_size=30)
         pygame.display.update()
 
-    def set_difficulty(self, difficulty):
+    def set_difficulty(self, difficulty: str) -> None:
         self._difficulty = difficulty
 
-    def change_options(self):
+    def change_options(self) -> None:
         options = Options(self._WINDOW)
         options.set_options(self.set_difficulty)
 
-    def play_game(self):
+    def play_game(self) -> None:
         should_start_new_game = True
         while should_start_new_game:
             game = Game(self._WINDOW, self._difficulty)
             should_start_new_game = game.play()
 
-    def run(self):
+    def run(self) -> None:
         run = True
         clock = pygame.time.Clock()
         click = False

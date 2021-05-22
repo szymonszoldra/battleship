@@ -8,13 +8,13 @@ from components.button import Button
 
 
 class Options:
-    def __init__(self, window):
+    def __init__(self, window) -> None:
         self._WINDOW = window
         self._btn_easy = Button(BUTTON_COLOR, WIDTH // 2, HEIGHT // 4, 200, 80, EASY)
         self._btn_hard = Button(BUTTON_COLOR, WIDTH // 2, HEIGHT // 4 * 2, 200, 80, HARD)
         self._btn_impossible = Button(BUTTON_COLOR, WIDTH // 2, HEIGHT // 4 * 3, 200, 80, IMPOSSIBLE)
 
-    def draw_options(self):
+    def draw_options(self) -> None:
         self._WINDOW.fill(BACKGROUND_COLOR)
         self._btn_easy.draw(self._WINDOW, font_size=30)
         self._btn_hard.draw(self._WINDOW, font_size=30)
@@ -22,7 +22,7 @@ class Options:
 
         pygame.display.update()
 
-    def set_options(self, setter: Callable):
+    def set_options(self, setter: Callable) -> None:
         run = True
         clock = pygame.time.Clock()
         click = False
