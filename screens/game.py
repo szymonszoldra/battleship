@@ -1,7 +1,8 @@
 import pygame
 
 from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE
-from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR
+from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
+from constants.fonts import FONT
 
 from components.button import Button
 from components.field import Field
@@ -32,6 +33,13 @@ class Game:
             self._player_fields[i].draw_init(self._WINDOW)
             self._computer_fields[i].draw_init(self._WINDOW)
 
+    def draw_titles(self) -> None:
+        user = FONT.render('You', True, WHITE)
+        computer = FONT.render('Computer', True, WHITE)
+
+        self._WINDOW.blit(user, (400 - user.get_width() // 2, 80 - user.get_height() // 2))
+        self._WINDOW.blit(computer, (WIDTH - 400 - computer.get_width() // 2, 80 - computer.get_height() // 2))
+
     def play(self) -> bool:
         run = True
         clock = pygame.time.Clock()
@@ -56,4 +64,5 @@ class Game:
 
             self.draw_buttons()
             self.draw_init_fields()
+            self.draw_titles()
             pygame.display.update()
