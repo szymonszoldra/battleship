@@ -4,10 +4,10 @@ from constants.window import WIDTH, HEIGHT, FPS
 from constants.fonts import FONT
 from constants.difficulty import DEFAULT
 
-from components.Button import Button
+from components.button import Button
 
-from screens.Game import Game
-from screens.Options import Options
+from screens.game import Game
+from screens.options import Options
 
 
 class Application:

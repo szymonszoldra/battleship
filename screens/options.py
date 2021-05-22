@@ -4,7 +4,7 @@ from constants.difficulty import EASY, HARD, IMPOSSIBLE
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR
 from constants.window import WIDTH, HEIGHT, FPS
 
-from components.Button import Button
+from components.button import Button
 
 
 class Options:
