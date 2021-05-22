@@ -37,8 +37,10 @@ class Application:
         options.set_options(self.set_difficulty)
 
     def play_game(self):
-        game = Game(self._difficulty)
-        game.play()
+        should_start_new_game = True
+        while should_start_new_game:
+            game = Game(self._WINDOW, self._difficulty)
+            should_start_new_game = game.play()
 
     def run(self):
         run = True
@@ -50,6 +52,9 @@ class Application:
 
             if self._btn_options.is_mouse_over(mouse_coords) and click:
                 self.change_options()
+
+            if self._btn_game.is_mouse_over(mouse_coords) and click:
+                self.play_game()
 
             click = False
             for event in pygame.event.get():
