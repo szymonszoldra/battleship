@@ -81,14 +81,14 @@ class FieldProcessor:
             if x != 9:
                 self._computer_fields[x + 1][y].prevent_selection()
 
-    def choose_fields(self, size: int, number_of_ships: int, limit: int) -> None:
+    def choose_fields(self, size: int, number_of_ships: int) -> None:
         counter = 0
 
         while counter < number_of_ships:
             horizontal_position = True if random.random() > 0.5 else False
 
             if horizontal_position:
-                x = random.randint(0, limit)
+                x = random.randint(0, 10 - size)
                 y = random.randint(0, 9)
 
                 if not self.can_ship_fit((x, y), size, horizontal=True):
@@ -98,7 +98,7 @@ class FieldProcessor:
 
             else:
                 x = random.randint(0, 9)
-                y = random.randint(0, limit)
+                y = random.randint(0, 10 - size)
 
                 if not self.can_ship_fit((x, y), size, horizontal=False):
                     continue
@@ -108,7 +108,7 @@ class FieldProcessor:
 
     def choose_fields_for_computer_ships(self) -> None:
         # Named parameters to improve readability
-        self.choose_fields(size=4, number_of_ships=1, limit=6)
-        self.choose_fields(size=3, number_of_ships=2, limit=7)
-        self.choose_fields(size=2, number_of_ships=3, limit=8)
-        self.choose_fields(size=1, number_of_ships=4, limit=9)
+        self.choose_fields(size=4, number_of_ships=1)
+        self.choose_fields(size=3, number_of_ships=2)
+        self.choose_fields(size=2, number_of_ships=3)
+        self.choose_fields(size=1, number_of_ships=4)
