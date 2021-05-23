@@ -7,6 +7,7 @@ from constants.fonts import FONT
 
 from components.button import Button
 from components.field import Field
+from utils.field_processor import FieldProcessor
 
 
 class Game:
@@ -23,25 +24,8 @@ class Game:
         self.process_computer_fields()
 
     def process_computer_fields(self):
-        # 4 masztowiec
-        horizontal_position = True if random.random() > 0.5 else False
-
-        if horizontal_position:
-            starting_point_x = random.randint(0, 6)
-            starting_point_y = random.randint(0, 9)
-
-            for _ in range(4):
-                self._computer_fields[starting_point_x][starting_point_y].choose_field()
-                starting_point_x += 1
-
-        else:
-            starting_point_x = random.randint(0, 9)
-            starting_point_y = random.randint(0, 6)
-
-            for _ in range(4):
-                self._computer_fields[starting_point_x][starting_point_y].choose_field()
-                starting_point_y += 1
-
+        field_processor = FieldProcessor(self._computer_fields)
+        field_processor.choose_fields_for_computer_ships()
 
     def draw_buttons(self) -> None:
         self._WINDOW.fill(BACKGROUND_COLOR)
