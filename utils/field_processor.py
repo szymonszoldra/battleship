@@ -1,69 +1,114 @@
 import random
 from components.field import Field
 
+import itertools
+
 
 class FieldProcessor:
     def __init__(self, computer_fields: list[list[Field]]) -> None:
         self._computer_fields = computer_fields
 
-    def choose_fields_for_size_4(self) -> None:
-        horizontal_position = True if random.random() > 0.5 else False
+    def get_prevented_fields(self) -> list[tuple[int, int]]:
+        return list(map(lambda field: field.get_coords(), filter(lambda f: not f.can_field_be_chosen(),
+                                                                 itertools.chain.from_iterable(self._computer_fields))))
 
-        if horizontal_position:
-            # starting coords
-            x = random.randint(0, 6)
-            y = random.randint(0, 9)
+    def is_field_prevented(self, field: tuple[int, int]) -> bool:
+        return field in self.get_prevented_fields()
 
-            if x != 0:
-                if y != 0:
-                    self._computer_fields[x - 1][y - 1].prevent_selection()
-                self._computer_fields[x - 1][y].prevent_selection()
-                if y != 9:
-                    self._computer_fields[x - 1][y + 1].prevent_selection()
-
-            for _ in range(4):
-                if y != 0:
-                    self._computer_fields[x][y - 1].prevent_selection()
-                if y != 9:
-                    self._computer_fields[x][y + 1].prevent_selection()
-
-                self._computer_fields[x][y].choose_field()
+    def can_ship_fit(self, starting_pair: tuple[int, int], length: int, horizontal: bool) -> bool:
+        unavailable_fields = self.get_prevented_fields()
+        x, y = starting_pair
+        if horizontal:
+            for _ in range(length):
+                if (x, y) in unavailable_fields:
+                    return False
                 x += 1
-
-            if x != 10:
-                if y != 0:
-                    self._computer_fields[x][y - 1].prevent_selection()
-                self._computer_fields[x][y].prevent_selection()
-                if y != 9:
-                    self._computer_fields[x][y + 1].prevent_selection()
-
+            return True
         else:
-            # starting coords
-            x = random.randint(0, 9)
-            y = random.randint(0, 6)
-
-            if y != 0:
-                if x != 0:
-                    self._computer_fields[x - 1][y - 1].prevent_selection()
-                self._computer_fields[x][y - 1].prevent_selection()
-                if x != 9:
-                    self._computer_fields[x + 1][y - 1].prevent_selection()
-
-            for _ in range(4):
-                if x != 0:
-                    self._computer_fields[x - 1][y].prevent_selection()
-                if x != 9:
-                    self._computer_fields[x + 1][y].prevent_selection()
-
-                self._computer_fields[x][y].choose_field()
+            for _ in range(length):
+                if (x, y) in unavailable_fields:
+                    return False
                 y += 1
+            return True
 
-            if y != 10:
-                if x != 0:
-                    self._computer_fields[x - 1][y].prevent_selection()
-                self._computer_fields[x][y].prevent_selection()
-                if x != 9:
-                    self._computer_fields[x + 1][y].prevent_selection()
+    def process_horizontal(self, pair: tuple[int, int], size: int) -> None:
+        x, y = pair
+        if x != 0:
+            if y != 0:
+                self._computer_fields[x - 1][y - 1].prevent_selection()
+            self._computer_fields[x - 1][y].prevent_selection()
+            if y != 9:
+                self._computer_fields[x - 1][y + 1].prevent_selection()
+
+        for _ in range(size):
+            if y != 0:
+                self._computer_fields[x][y - 1].prevent_selection()
+            if y != 9:
+                self._computer_fields[x][y + 1].prevent_selection()
+
+            self._computer_fields[x][y].choose_field()
+            x += 1
+
+        if x != 10:
+            if y != 0:
+                self._computer_fields[x][y - 1].prevent_selection()
+            self._computer_fields[x][y].prevent_selection()
+            if y != 9:
+                self._computer_fields[x][y + 1].prevent_selection()
+
+    def process_vertical(self, pair: tuple[int, int], size: int) -> None:
+        x, y = pair
+        if y != 0:
+            if x != 0:
+                self._computer_fields[x - 1][y - 1].prevent_selection()
+            self._computer_fields[x][y - 1].prevent_selection()
+            if x != 9:
+                self._computer_fields[x + 1][y - 1].prevent_selection()
+
+        for _ in range(size):
+            if x != 0:
+                self._computer_fields[x - 1][y].prevent_selection()
+            if x != 9:
+                self._computer_fields[x + 1][y].prevent_selection()
+
+            self._computer_fields[x][y].choose_field()
+            y += 1
+
+        if y != 10:
+            if x != 0:
+                self._computer_fields[x - 1][y].prevent_selection()
+            self._computer_fields[x][y].prevent_selection()
+            if x != 9:
+                self._computer_fields[x + 1][y].prevent_selection()
+
+    def choose_fields(self, size: int, number_of_ships: int, limit: int) -> None:
+        counter = 0
+
+        while counter < number_of_ships:
+            horizontal_position = True if random.random() > 0.5 else False
+
+            if horizontal_position:
+                x = random.randint(0, limit)
+                y = random.randint(0, 9)
+
+                if not self.can_ship_fit((x, y), size, horizontal=True):
+                    continue
+
+                self.process_horizontal((x, y), size)
+
+            else:
+                x = random.randint(0, 9)
+                y = random.randint(0, limit)
+
+                if not self.can_ship_fit((x, y), size, horizontal=False):
+                    continue
+
+                self.process_vertical((x, y), size)
+            counter += 1
 
     def choose_fields_for_computer_ships(self) -> None:
-        self.choose_fields_for_size_4()
+        # Named parameters to improve readability
+        self.choose_fields(size=4, number_of_ships=1, limit=6)
+        self.choose_fields(size=3, number_of_ships=2, limit=7)
+        self.choose_fields(size=2, number_of_ships=3, limit=8)
+        self.choose_fields(size=1, number_of_ships=4, limit=9)
