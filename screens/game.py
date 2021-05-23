@@ -14,24 +14,21 @@ class Game:
         self._difficulty = difficulty
         self._btn_restart = Button(BUTTON_COLOR, 400, HEIGHT - 80, 200, 80, 'Restart')
         self._btn_quit = Button(BUTTON_COLOR, WIDTH - 400, HEIGHT - 80, 200, 80, 'Menu')
-        self._player_fields = [
-            Field(BACKGROUND_COLOR, 100 + i * FIELD_SIZE + FIELD_SIZE//2, 150 + j * FIELD_SIZE, FIELD_SIZE, FIELD_SIZE)
-            for i in range(10) for j in range(10)]
-        self._computer_fields = [
-            Field(BACKGROUND_COLOR, 900 + i * FIELD_SIZE + FIELD_SIZE//2, 150 + j * FIELD_SIZE, FIELD_SIZE, FIELD_SIZE)
-            for i in range(10) for j in range(10)]
+        self._player_fields = [[Field(BACKGROUND_COLOR, 100 + i * FIELD_SIZE + FIELD_SIZE // 2, 150 + j * FIELD_SIZE,
+                                      FIELD_SIZE, FIELD_SIZE) for j in range(10)] for i in range(10)]
+        self._computer_fields = [[Field(BACKGROUND_COLOR, 900 + i * FIELD_SIZE + FIELD_SIZE // 2, 150 + j * FIELD_SIZE,
+                                        FIELD_SIZE, FIELD_SIZE) for j in range(10)] for i in range(10)]
 
     def draw_buttons(self) -> None:
         self._WINDOW.fill(BACKGROUND_COLOR)
         self._btn_restart.draw(self._WINDOW, font_size=30)
         self._btn_quit.draw(self._WINDOW, font_size=30)
-        for i in range(100):
-            self._player_fields[i].draw_init(self._WINDOW)
 
     def draw_init_fields(self) -> None:
-        for i in range(100):
-            self._player_fields[i].draw_init(self._WINDOW)
-            self._computer_fields[i].draw_init(self._WINDOW)
+        for i in range(10):
+            for j in range(10):
+                self._player_fields[i][j].draw_init(self._WINDOW)
+                self._computer_fields[i][j].draw_init(self._WINDOW)
 
     def draw_titles(self) -> None:
         user = FONT.render('You', True, WHITE)
