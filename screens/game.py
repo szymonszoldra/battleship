@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
@@ -18,6 +19,29 @@ class Game:
                                       FIELD_SIZE, FIELD_SIZE) for j in range(10)] for i in range(10)]
         self._computer_fields = [[Field(BACKGROUND_COLOR, 900 + i * FIELD_SIZE + FIELD_SIZE // 2, 150 + j * FIELD_SIZE,
                                         FIELD_SIZE, FIELD_SIZE) for j in range(10)] for i in range(10)]
+
+        self.process_computer_fields()
+
+    def process_computer_fields(self):
+        # 4 masztowiec
+        horizontal_position = True if random.random() > 0.5 else False
+
+        if horizontal_position:
+            starting_point_x = random.randint(0, 6)
+            starting_point_y = random.randint(0, 9)
+
+            for _ in range(4):
+                self._computer_fields[starting_point_x][starting_point_y].choose_field()
+                starting_point_x += 1
+
+        else:
+            starting_point_x = random.randint(0, 9)
+            starting_point_y = random.randint(0, 6)
+
+            for _ in range(4):
+                self._computer_fields[starting_point_x][starting_point_y].choose_field()
+                starting_point_y += 1
+
 
     def draw_buttons(self) -> None:
         self._WINDOW.fill(BACKGROUND_COLOR)

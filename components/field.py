@@ -1,6 +1,6 @@
 from components.button import Button
 
-from constants.colors import WHITE
+from constants.colors import WHITE, BUTTON_COLOR
 
 
 class Field(Button):
@@ -10,4 +10,10 @@ class Field(Button):
         self._clicked = False
 
     def draw_init(self, window) -> None:
-        self.draw(window, outline_color=WHITE)
+        if self._clicked:
+            self.draw(window, outline_color=(255, 0, 0))
+        else:
+            self.draw(window, outline_color=WHITE)
+
+    def choose_field(self):
+        self._clicked = True
