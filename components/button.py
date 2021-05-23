@@ -1,5 +1,6 @@
 import pygame
 from constants.colors import WHITE
+from constants.window import OUTLINE_THICKNESS
 
 
 class Button:
@@ -26,7 +27,9 @@ class Button:
     def draw(self, window, outline_color: tuple[int, int, int] = None, font_size: int = 10) -> None:
         if outline_color:
             pygame.draw.rect(window, outline_color, (self._x, self._y, self._width, self._height), 0)
-            pygame.draw.rect(window, self._color, (self._x + 2, self._y + 2, self._width - 4, self._height - 4), 0)
+            pygame.draw.rect(window, self._color, (
+                self._x + OUTLINE_THICKNESS, self._y + OUTLINE_THICKNESS, self._width - OUTLINE_THICKNESS * 2,
+                self._height - OUTLINE_THICKNESS * 2), 0)
         else:
             pygame.draw.rect(window, self._color, (self._x, self._y, self._width, self._height), 0)
 
