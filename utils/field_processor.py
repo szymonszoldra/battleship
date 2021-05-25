@@ -5,12 +5,12 @@ import itertools
 
 
 class FieldProcessor:
-    def __init__(self, computer_fields: list[list[Field]]) -> None:
-        self._computer_fields = computer_fields
+    def __init__(self, fields: list[list[Field]]) -> None:
+        self._fields = fields
 
     def get_prevented_fields(self) -> list[tuple[int, int]]:
         return list(map(lambda field: field.get_coords(), filter(lambda f: not f.can_field_be_chosen(),
-                                                                 itertools.chain.from_iterable(self._computer_fields))))
+                                                                 itertools.chain.from_iterable(self._fields))))
 
     def is_field_prevented(self, field: tuple[int, int]) -> bool:
         return field in self.get_prevented_fields()
@@ -35,51 +35,51 @@ class FieldProcessor:
         x, y = pair
         if x != 0:
             if y != 0:
-                self._computer_fields[x - 1][y - 1].prevent_selection()
-            self._computer_fields[x - 1][y].prevent_selection()
+                self._fields[x - 1][y - 1].prevent_selection()
+            self._fields[x - 1][y].prevent_selection()
             if y != 9:
-                self._computer_fields[x - 1][y + 1].prevent_selection()
+                self._fields[x - 1][y + 1].prevent_selection()
 
         for _ in range(size):
             if y != 0:
-                self._computer_fields[x][y - 1].prevent_selection()
+                self._fields[x][y - 1].prevent_selection()
             if y != 9:
-                self._computer_fields[x][y + 1].prevent_selection()
+                self._fields[x][y + 1].prevent_selection()
 
-            self._computer_fields[x][y].choose_field()
+            self._fields[x][y].choose_field()
             x += 1
 
         if x != 10:
             if y != 0:
-                self._computer_fields[x][y - 1].prevent_selection()
-            self._computer_fields[x][y].prevent_selection()
+                self._fields[x][y - 1].prevent_selection()
+            self._fields[x][y].prevent_selection()
             if y != 9:
-                self._computer_fields[x][y + 1].prevent_selection()
+                self._fields[x][y + 1].prevent_selection()
 
     def process_vertical(self, pair: tuple[int, int], size: int) -> None:
         x, y = pair
         if y != 0:
             if x != 0:
-                self._computer_fields[x - 1][y - 1].prevent_selection()
-            self._computer_fields[x][y - 1].prevent_selection()
+                self._fields[x - 1][y - 1].prevent_selection()
+            self._fields[x][y - 1].prevent_selection()
             if x != 9:
-                self._computer_fields[x + 1][y - 1].prevent_selection()
+                self._fields[x + 1][y - 1].prevent_selection()
 
         for _ in range(size):
             if x != 0:
-                self._computer_fields[x - 1][y].prevent_selection()
+                self._fields[x - 1][y].prevent_selection()
             if x != 9:
-                self._computer_fields[x + 1][y].prevent_selection()
+                self._fields[x + 1][y].prevent_selection()
 
-            self._computer_fields[x][y].choose_field()
+            self._fields[x][y].choose_field()
             y += 1
 
         if y != 10:
             if x != 0:
-                self._computer_fields[x - 1][y].prevent_selection()
-            self._computer_fields[x][y].prevent_selection()
+                self._fields[x - 1][y].prevent_selection()
+            self._fields[x][y].prevent_selection()
             if x != 9:
-                self._computer_fields[x + 1][y].prevent_selection()
+                self._fields[x + 1][y].prevent_selection()
 
     def choose_fields(self, size: int, number_of_ships: int) -> None:
         counter = 0

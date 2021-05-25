@@ -1,6 +1,6 @@
 from components.button import Button
 
-from constants.colors import WHITE
+from constants.colors import WHITE, RED, GREEN, BLUE
 
 
 class Field(Button):
@@ -18,11 +18,11 @@ class Field(Button):
 
     def draw_init(self, window) -> None:
         if not self._can_be_chosen:
-            self.draw(window, outline_color=(255, 0, 0))  # temp for testing
+            self.draw(window, outline_color=RED)
         elif self._clicked:
-            self.draw(window, outline_color=(0, 0, 255))  # temp for testing
+            self.draw(window, outline_color=BLUE)
         elif self._temporary_mouse_over:
-            self.draw(window, outline_color=(0, 255, 0))  # temp for testing
+            self.draw(window, outline_color=GREEN)
         else:
             self.draw(window, outline_color=WHITE)
 

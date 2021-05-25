@@ -18,16 +18,16 @@ class Game:
         self._setup_over = False
         self._btn_restart = Button(BUTTON_COLOR, 400, HEIGHT - 80, 200, 80, 'Restart')
         self._btn_quit = Button(BUTTON_COLOR, WIDTH - 400, HEIGHT - 80, 200, 80, 'Menu')
-        self._player_fields = [[Field(BACKGROUND_COLOR, 100 + i * FIELD_SIZE + FIELD_SIZE // 2, 150 + j * FIELD_SIZE,
-                                      FIELD_SIZE, FIELD_SIZE, (i, j)) for j in range(10)] for i in range(10)]
-        self._computer_fields = [[Field(BACKGROUND_COLOR, 900 + i * FIELD_SIZE + FIELD_SIZE // 2, 150 + j * FIELD_SIZE,
-                                        FIELD_SIZE, FIELD_SIZE, (i, j)) for j in range(10)] for i in range(10)]
+        self._player_fields = [[Field(BACKGROUND_COLOR, 100 + x * FIELD_SIZE + FIELD_SIZE // 2, 150 + y * FIELD_SIZE,
+                                      FIELD_SIZE, FIELD_SIZE, (x, y)) for y in range(10)] for x in range(10)]
+        self._computer_fields = [[Field(BACKGROUND_COLOR, 900 + x * FIELD_SIZE + FIELD_SIZE // 2, 150 + y * FIELD_SIZE,
+                                        FIELD_SIZE, FIELD_SIZE, (x, y)) for y in range(10)] for x in range(10)]
 
         self.process_computer_fields()
         self._ships_to_allocate = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
         self._latest_clicked_field: Union[tuple[int, int], None] = None
 
-    def process_computer_fields(self):
+    def process_computer_fields(self) -> None:
         field_processor = FieldProcessor(self._computer_fields)
         field_processor.choose_fields_for_computer_ships()
 
@@ -37,10 +37,10 @@ class Game:
         self._btn_quit.draw(self._WINDOW, font_size=30)
 
     def draw_init_fields(self) -> None:
-        for i in range(10):
-            for j in range(10):
-                self._player_fields[i][j].draw_init(self._WINDOW)
-                self._computer_fields[i][j].draw_init(self._WINDOW)
+        for x in range(10):
+            for y in range(10):
+                self._player_fields[x][y].draw_init(self._WINDOW)
+                self._computer_fields[x][y].draw_init(self._WINDOW)
 
     def draw_titles(self) -> None:
         user = FONT.render('You', True, WHITE)
@@ -50,9 +50,45 @@ class Game:
         self._WINDOW.blit(computer, (WIDTH - 400 - computer.get_width() // 2, 80 - computer.get_height() // 2))
 
     def reset_fields_in_setup(self) -> None:
-        for i in range(10):
-            for j in range(10):
-                self._player_fields[i][j].set_temporary_mouse_over(False)
+        for row in self._player_fields:
+            for field in row:
+                field.set_temporary_mouse_over(False)
+
+    def setup_horizontal(self, coords: tuple[int, int], size: int) -> None:
+        x, y = coords
+        if x > 10 - size:
+            return
+
+        field_processor = FieldProcessor(self._player_fields)
+
+        if not field_processor.can_ship_fit((x, y), size, True):
+            return
+
+        for _ in range(size):
+            self._player_fields[x][y].set_temporary_mouse_over(True)
+            x += 1
+
+        if self._latest_clicked_field:
+            field_processor.process_horizontal(self._latest_clicked_field, size)
+            self._ships_to_allocate.pop(0)
+
+    def setup_vertical(self, coords: tuple[int, int], size: int) -> None:
+        x, y = coords
+        if y > 10 - size:
+            return
+
+        field_processor = FieldProcessor(self._player_fields)
+
+        if not field_processor.can_ship_fit((x, y), size, False):
+            return
+
+        for _ in range(size):
+            self._player_fields[x][y].set_temporary_mouse_over(True)
+            y += 1
+
+        if self._latest_clicked_field:
+            field_processor.process_vertical(self._latest_clicked_field, size)
+            self._ships_to_allocate.pop(0)
 
     def setup(self, mouse_coords: tuple[int, int], horizontal: bool) -> None:
         if len(self._ships_to_allocate) == 0:
@@ -65,39 +101,14 @@ class Game:
                                  itertools.chain.from_iterable(self._player_fields)))
         if len(mouse_over) == 0:
             return
-        x, y = mouse_over[0].get_coords()
-        current_ship = self._ships_to_allocate[0]
-        field_processor = FieldProcessor(self._player_fields)
+
+        field_coords = mouse_over[0].get_coords()
+        current_ship_size = self._ships_to_allocate[0]
 
         if horizontal:
-            if x > 10 - current_ship:
-                return
-
-            if not field_processor.can_ship_fit((x, y), current_ship, True):
-                return
-
-            for _ in range(current_ship):
-                self._player_fields[x][y].set_temporary_mouse_over(True)
-                x += 1
-
-            if self._latest_clicked_field:
-                field_processor.process_horizontal(self._latest_clicked_field, current_ship)
-                self._ships_to_allocate.pop(0)
-
+            self.setup_horizontal(field_coords, current_ship_size)
         else:
-            if y > 10 - current_ship:
-                return
-
-            if not field_processor.can_ship_fit((x, y), current_ship, False):
-                return
-
-            for _ in range(current_ship):
-                self._player_fields[x][y].set_temporary_mouse_over(True)
-                y += 1
-
-            if self._latest_clicked_field:
-                field_processor.process_vertical(self._latest_clicked_field, current_ship)
-                self._ships_to_allocate.pop(0)
+            self.setup_vertical(field_coords, current_ship_size)
 
     def start(self) -> bool:
         run = True
@@ -136,8 +147,7 @@ class Game:
             self.draw_titles()
             if not self._setup_over:
                 self.setup(mouse_coords, setup_horizontal)
-
+            else:
+                print('GAME CAN START')
             self._latest_clicked_field = None
             pygame.display.update()
-            if len(self._ships_to_allocate) == 0:
-                print('GAME CAN START')
