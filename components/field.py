@@ -20,14 +20,15 @@ class Field(Button):
         if not self._can_be_chosen:
             self.draw(window, outline_color=RED)
         elif self._clicked:
-            self.draw(window, outline_color=BLUE)
+            self.draw(window, outline_color=BLUE, font_size=40)
         elif self._temporary_mouse_over:
             self.draw(window, outline_color=GREEN)
         else:
             self.draw(window, outline_color=WHITE)
 
-    def choose_field(self) -> None:
+    def choose_field(self, size: str) -> None:
         self._clicked = True
+        self._text = size  # Protected
 
     def prevent_selection(self) -> None:
         self._can_be_chosen = False

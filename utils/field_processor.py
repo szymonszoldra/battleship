@@ -46,7 +46,7 @@ class FieldProcessor:
             if y != 9:
                 self._fields[x][y + 1].prevent_selection()
 
-            self._fields[x][y].choose_field()
+            self._fields[x][y].choose_field(str(size))
             x += 1
 
         if x != 10:
@@ -71,7 +71,7 @@ class FieldProcessor:
             if x != 9:
                 self._fields[x + 1][y].prevent_selection()
 
-            self._fields[x][y].choose_field()
+            self._fields[x][y].choose_field(str(size))
             y += 1
 
         if y != 10:
