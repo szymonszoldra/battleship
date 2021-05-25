@@ -11,6 +11,7 @@ class Field(Button):
         self._coords = coords
         self._clicked = False
         self._can_be_chosen = True
+        self._temporary_mouse_over = False
 
     def get_coords(self) -> tuple[int, int]:
         return self._coords
@@ -20,6 +21,8 @@ class Field(Button):
             self.draw(window, outline_color=(255, 0, 0))  # temp for testing
         elif self._clicked:
             self.draw(window, outline_color=(0, 0, 255))  # temp for testing
+        elif self._temporary_mouse_over:
+            self.draw(window, outline_color=(0, 255, 0))  # temp for testing
         else:
             self.draw(window, outline_color=WHITE)
 
@@ -31,3 +34,7 @@ class Field(Button):
 
     def can_field_be_chosen(self) -> bool:
         return self._can_be_chosen and not self._clicked
+
+    def set_temporary_mouse_over(self, value: bool) -> None:
+        if self.can_field_be_chosen():
+            self._temporary_mouse_over = value
