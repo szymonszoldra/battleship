@@ -1,10 +1,12 @@
 import pygame
 import itertools
+from random import random, randint
 from typing import Union
 
 from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
 from constants.fonts import FONT
+from constants.difficulty import EASY, HARD, IMPOSSIBLE
 
 from components.button import Button
 from components.field import Field
@@ -19,13 +21,18 @@ class Game:
         self._btn_restart = Button(BUTTON_COLOR, 400, HEIGHT - 80, 200, 80, 'Restart')
         self._btn_quit = Button(BUTTON_COLOR, WIDTH - 400, HEIGHT - 80, 200, 80, 'Menu')
         self._player_fields = [[Field(BACKGROUND_COLOR, 100 + x * FIELD_SIZE + FIELD_SIZE // 2, 150 + y * FIELD_SIZE,
-                                      FIELD_SIZE, FIELD_SIZE, (x, y)) for y in range(10)] for x in range(10)]
+                                      FIELD_SIZE, FIELD_SIZE, (x, y), False) for y in range(10)] for x in range(10)]
         self._computer_fields = [[Field(BACKGROUND_COLOR, 900 + x * FIELD_SIZE + FIELD_SIZE // 2, 150 + y * FIELD_SIZE,
-                                        FIELD_SIZE, FIELD_SIZE, (x, y)) for y in range(10)] for x in range(10)]
+                                        FIELD_SIZE, FIELD_SIZE, (x, y), True) for y in range(10)] for x in range(10)]
 
         self.process_computer_fields()
         self._ships_to_allocate = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
         self._latest_clicked_field: Union[tuple[int, int], None] = None
+
+        # randomly selected whether the first move belongs to the player or to the computer
+        # self._is_player_move: bool = random() < 0.5
+        self._is_player_move = False
+        self._computer_shots = {}
 
     def process_computer_fields(self) -> None:
         field_processor = FieldProcessor(self._computer_fields)
@@ -113,6 +120,36 @@ class Game:
         else:
             self.setup_vertical(field_coords, current_ship_size)
 
+    def player_move(self) -> None:
+        pass
+
+    def easy_move(self) -> None:
+        while True:
+            x = randint(0, 9)
+            y = randint(0, 9)
+
+            if (x, y) in self._computer_shots:
+                continue
+
+            pygame.time.wait(1500)
+            self._player_fields[x][y].shoot()
+            self._is_player_move = True
+            break
+
+    def computer_move(self) -> None:
+        if self._difficulty == EASY:
+            self.easy_move()
+        elif self._difficulty == HARD:
+            pass
+        elif self._difficulty == IMPOSSIBLE:  # not else for not readability
+            pass
+
+    def play(self) -> None:
+        if self._is_player_move:
+            self.player_move()
+        else:
+            self.computer_move()
+
     def start(self) -> bool:
         run = True
         clock = pygame.time.Clock()
@@ -151,6 +188,6 @@ class Game:
             if not self._setup_over:
                 self.setup(mouse_coords, setup_horizontal)
             else:
-                print('GAME CAN START')
+                self.play()
             self._latest_clicked_field = None
             pygame.display.update()

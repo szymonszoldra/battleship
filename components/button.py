@@ -12,6 +12,7 @@ class Button:
         self._width = width
         self._height = height
         self._text = text
+        self._show_text = True
 
         if cartesian_coordinates:
             self._x -= self._width // 2
@@ -24,6 +25,9 @@ class Button:
 
         return is_mouse_inside_x and is_mouse_inside_y
 
+    def set_show_text(self, value: bool) -> None:
+        self._show_text = value
+
     def draw(self, window, outline_color: tuple[int, int, int] = None, font_size: int = 10) -> None:
         if outline_color:
             pygame.draw.rect(window, outline_color, (self._x, self._y, self._width, self._height), 0)
@@ -33,7 +37,7 @@ class Button:
         else:
             pygame.draw.rect(window, self._color, (self._x, self._y, self._width, self._height), 0)
 
-        if self._text != '':
+        if self._text != '' and self._show_text:
             font = pygame.font.SysFont('Cascadia Code', font_size)
             text = font.render(self._text, True, WHITE)
             window.blit(text, (self._x + (self._width // 2 - text.get_width() // 2),
