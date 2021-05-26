@@ -76,6 +76,9 @@ class Field(Button):
         self._can_be_chosen = True
 
     def shoot(self) -> bool:
+        if self._shot:
+            print('ALREADY CLICKED!')
+            return False
         self._shot = True
         self.set_show_text(True)
         return self._ship_inside

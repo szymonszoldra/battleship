@@ -1,5 +1,6 @@
 import pygame
 import itertools
+from functools import reduce
 from random import random, randint
 from typing import Union
 
@@ -30,9 +31,12 @@ class Game:
         self._latest_clicked_field: Union[tuple[int, int], None] = None
 
         # randomly selected whether the first move belongs to the player or to the computer
-        # self._is_player_move: bool = random() < 0.5
-        self._is_player_move = False
-        self._computer_shots = {}
+        self._is_player_move: bool = random() < 0.5
+
+        self._possible_shoots = [(x, y) for x in range(10) for y in range(10)]
+        self._computer_good_shots = 0
+        self._player_good_shots = 0
+        self._good_shots_to_win = reduce(lambda a, b: a + b, self._ships_to_allocate)
 
     def process_computer_fields(self) -> None:
         field_processor = FieldProcessor(self._computer_fields)
@@ -121,20 +125,27 @@ class Game:
             self.setup_vertical(field_coords, current_ship_size)
 
     def player_move(self) -> None:
-        pass
+        if self._latest_clicked_field:
+            x, y = self._latest_clicked_field
+            shot = self._computer_fields[x][y].shoot()
+
+            if shot:
+                self._player_good_shots += 1
+
+            print('PLAYER:', self._player_good_shots)
+
+            self._is_player_move = False
 
     def easy_move(self) -> None:
-        while True:
-            x = randint(0, 9)
-            y = randint(0, 9)
+        index = randint(0, len(self._possible_shoots) - 1)
+        x, y = self._possible_shoots.pop(index)
+        shot = self._player_fields[x][y].shoot()
 
-            if (x, y) in self._computer_shots:
-                continue
+        if shot:
+            self._computer_good_shots += 1
 
-            pygame.time.wait(1500)
-            self._player_fields[x][y].shoot()
-            self._is_player_move = True
-            break
+        print('COMPUTER:', self._computer_good_shots)
+        self._is_player_move = True
 
     def computer_move(self) -> None:
         if self._difficulty == EASY:
@@ -165,10 +176,16 @@ class Game:
             if self._btn_quit.is_mouse_over(mouse_coords) and click:
                 return False
 
-            for x in range(10):
-                for y in range(10):
-                    if self._player_fields[x][y].is_mouse_over(mouse_coords) and click:
-                        self._latest_clicked_field = (x, y)
+            if self._setup_over:
+                for x in range(10):
+                    for y in range(10):
+                        if self._computer_fields[x][y].is_mouse_over(mouse_coords) and click:
+                            self._latest_clicked_field = (x, y)
+            else:
+                for x in range(10):
+                    for y in range(10):
+                        if self._player_fields[x][y].is_mouse_over(mouse_coords) and click:
+                            self._latest_clicked_field = (x, y)
 
             click = False
 
@@ -188,6 +205,17 @@ class Game:
             if not self._setup_over:
                 self.setup(mouse_coords, setup_horizontal)
             else:
-                self.play()
+                if self._player_good_shots == self._good_shots_to_win:
+                    print('YOU WON')
+                    pygame.display.update()
+                    pygame.time.wait(5000)
+                    return True
+                elif self._computer_good_shots == self._good_shots_to_win:
+                    print('COMPUTER WON')
+                    pygame.display.update()
+                    pygame.time.wait(5000)
+                    return True
+                else:
+                    self.play()
             self._latest_clicked_field = None
             pygame.display.update()
