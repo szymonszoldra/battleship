@@ -92,6 +92,9 @@ class Game:
 
     def setup(self, mouse_coords: tuple[int, int], horizontal: bool) -> None:
         if len(self._ships_to_allocate) == 0:
+            for field in itertools.chain.from_iterable(self._player_fields):
+                field.reset_field_after_setup()
+
             self._setup_over = True
             return
 
