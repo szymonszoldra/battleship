@@ -82,3 +82,7 @@ class Field(Button):
         self._shot = True
         self.set_show_text(True)
         return self._ship_inside
+
+    def should_shoot_this_field(self) -> bool:
+        """ For impossible difficulty only"""
+        return self._ship_inside and not self._shot

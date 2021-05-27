@@ -147,13 +147,24 @@ class Game:
         print('COMPUTER:', self._computer_good_shots)
         self._is_player_move = True
 
+    def impossible_move(self) -> None:
+        fields_to_shoot = list(
+            filter(lambda f: f.should_shoot_this_field(), itertools.chain.from_iterable(self._player_fields)))
+
+        index = randint(0, len(fields_to_shoot) - 1)
+        ship = fields_to_shoot.pop(index)
+        ship.shoot()
+        self._computer_good_shots += 1
+        print('COMPUTER:', self._computer_good_shots)
+        self._is_player_move = True
+
     def computer_move(self) -> None:
         if self._difficulty == EASY:
             self.easy_move()
         elif self._difficulty == HARD:
             pass
         elif self._difficulty == IMPOSSIBLE:  # not else for not readability
-            pass
+            self.impossible_move()
 
     def play(self) -> None:
         if self._is_player_move:
