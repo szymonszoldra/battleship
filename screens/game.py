@@ -12,6 +12,7 @@ from constants.difficulty import EASY, HARD, IMPOSSIBLE
 from components.button import Button
 from components.field import Field
 from utils.field_processor import FieldProcessor
+from exceptions.game import FieldAlreadyShotException
 
 
 class Game:
@@ -127,10 +128,12 @@ class Game:
     def player_move(self) -> None:
         if self._latest_clicked_field:
             x, y = self._latest_clicked_field
-            shot = self._computer_fields[x][y].shoot()
-
-            if shot:
-                self._player_good_shots += 1
+            try:
+                shot = self._computer_fields[x][y].shoot()
+                if shot:
+                    self._player_good_shots += 1
+            except FieldAlreadyShotException as e:
+                print(e)
 
             print('PLAYER:', self._player_good_shots)
 

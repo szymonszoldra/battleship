@@ -2,6 +2,8 @@ from components.button import Button
 
 from constants.colors import WHITE, RED, GREEN, BLUE
 
+from exceptions.game import FieldAlreadyShotException
+
 
 class Field(Button):
     def __init__(self, color: tuple[int, int, int], x: int, y: int, width: int, height: int, coords: tuple[int, int],
@@ -77,8 +79,8 @@ class Field(Button):
 
     def shoot(self) -> bool:
         if self._shot:
-            print('ALREADY CLICKED!')
-            return False
+            raise FieldAlreadyShotException
+
         self._shot = True
         self.set_show_text(True)
         return self._ship_inside
