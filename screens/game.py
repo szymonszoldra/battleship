@@ -174,7 +174,7 @@ class Game:
         self._is_player_move = True
 
     def computer_move(self) -> None:
-        if self._difficulty == EASY or HARD:
+        if self._difficulty == EASY or self._difficulty == HARD:
             self.normal_move()
         else:
             self.impossible_move()
