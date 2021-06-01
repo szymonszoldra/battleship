@@ -7,7 +7,7 @@ from typing import Union
 from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE, OUTLINE_THICKNESS_THICK
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
 from constants.fonts import FONT
-from constants.difficulty import EASY, HARD, IMPOSSIBLE, TEST
+from constants.difficulty import EASY, HARD, TEST
 from constants.messages import COMPUTER_WON_MESSAGE, YOU_WON_MESSAGE
 
 from components.button import Button
@@ -43,6 +43,17 @@ class Game:
     def process_computer_fields(self) -> None:
         field_processor = FieldProcessor(self._computer_fields)
         field_processor.choose_fields_for_computer_ships()
+
+    def process_hard_difficulty(self) -> None:
+        while len(self._possible_shoots) > 70:
+            fields_without_ships = list(
+                filter(lambda f: not f.should_shoot_this_field(), itertools.chain.from_iterable(self._player_fields)))
+
+            index = randint(0, len(fields_without_ships) - 1)
+            print(fields_without_ships[index].get_coords())
+            coords = fields_without_ships[index].get_coords()
+            if coords in self._possible_shoots:
+                self._possible_shoots.remove(coords)
 
     def draw_buttons(self) -> None:
         self._WINDOW.fill(BACKGROUND_COLOR)
@@ -109,6 +120,8 @@ class Game:
                 field.reset_field_after_setup()
 
             self._setup_over = True
+            if self._difficulty == HARD:
+                self.process_hard_difficulty()
             return
 
         self.reset_fields_in_setup()
@@ -140,11 +153,10 @@ class Game:
 
             self._is_player_move = False
 
-    def easy_move(self) -> None:
+    def normal_move(self) -> None:
         index = randint(0, len(self._possible_shoots) - 1)
         x, y = self._possible_shoots.pop(index)
         shot = self._player_fields[x][y].shoot()
-
         if shot:
             self._computer_good_shots += 1
 
@@ -163,11 +175,9 @@ class Game:
         self._is_player_move = True
 
     def computer_move(self) -> None:
-        if self._difficulty == EASY:
-            self.easy_move()
-        elif self._difficulty == HARD:
-            pass
-        elif self._difficulty == IMPOSSIBLE or self._difficulty == TEST:  # not else for not readability
+        if self._difficulty == EASY or HARD:
+            self.normal_move()
+        else:
             self.impossible_move()
 
     def play(self) -> None:
