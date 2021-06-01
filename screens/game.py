@@ -4,7 +4,7 @@ from functools import reduce
 from random import random, randint
 from typing import Union
 
-from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE
+from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE, OUTLINE_THICKNESS_THICK
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
 from constants.fonts import FONT
 from constants.difficulty import EASY, HARD, IMPOSSIBLE, TEST
@@ -176,6 +176,18 @@ class Game:
         else:
             self.computer_move()
 
+    def display_winner(self, message: str) -> None:
+        pygame.draw.rect(self._WINDOW, BUTTON_COLOR, (WIDTH // 2 - 400, HEIGHT // 2 - 200, 800, 400), 0)
+        pygame.draw.rect(self._WINDOW, BACKGROUND_COLOR, (
+            WIDTH // 2 - 400 + OUTLINE_THICKNESS_THICK, HEIGHT // 2 - 200 + OUTLINE_THICKNESS_THICK,
+            800 - OUTLINE_THICKNESS_THICK * 2,
+            400 - OUTLINE_THICKNESS_THICK * 2), 0)
+        font = pygame.font.SysFont('Cascadia Code', 80)
+        text = font.render(message, True, WHITE)
+        self._WINDOW.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2))
+        pygame.display.update()
+        pygame.time.wait(1500)
+
     def start(self) -> tuple[str, bool]:
         run = True
         clock = pygame.time.Clock()
@@ -224,17 +236,13 @@ class Game:
                     if self._difficulty == TEST:
                         return YOU_WON_MESSAGE, False
 
-                    pygame.time.wait(5000)
-                    print(YOU_WON_MESSAGE)
-                    pygame.display.update()
+                    self.display_winner(YOU_WON_MESSAGE)
                     return YOU_WON_MESSAGE, True
                 elif self._computer_good_shots == self._good_shots_to_win:
                     if self._difficulty == TEST:
                         return COMPUTER_WON_MESSAGE, False
 
-                    print(COMPUTER_WON_MESSAGE)
-                    pygame.display.update()
-                    pygame.time.wait(5000)
+                    self.display_winner(COMPUTER_WON_MESSAGE)
                     return COMPUTER_WON_MESSAGE, True
                 else:
                     self.play()
