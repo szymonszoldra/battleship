@@ -50,7 +50,6 @@ class Game:
                 filter(lambda f: not f.should_shoot_this_field(), itertools.chain.from_iterable(self._player_fields)))
 
             index = randint(0, len(fields_without_ships) - 1)
-            print(fields_without_ships[index].get_coords())
             coords = fields_without_ships[index].get_coords()
             if coords in self._possible_shoots:
                 self._possible_shoots.remove(coords)
