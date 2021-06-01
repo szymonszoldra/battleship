@@ -7,7 +7,8 @@ from typing import Union
 from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
 from constants.fonts import FONT
-from constants.difficulty import EASY, HARD, IMPOSSIBLE
+from constants.difficulty import EASY, HARD, IMPOSSIBLE, TEST
+from constants.messages import COMPUTER_WON_MESSAGE, YOU_WON_MESSAGE
 
 from components.button import Button
 from components.field import Field
@@ -166,7 +167,7 @@ class Game:
             self.easy_move()
         elif self._difficulty == HARD:
             pass
-        elif self._difficulty == IMPOSSIBLE:  # not else for not readability
+        elif self._difficulty == IMPOSSIBLE or self._difficulty == TEST:  # not else for not readability
             self.impossible_move()
 
     def play(self) -> None:
@@ -175,7 +176,7 @@ class Game:
         else:
             self.computer_move()
 
-    def start(self) -> bool:
+    def start(self) -> tuple[str, bool]:
         run = True
         clock = pygame.time.Clock()
         click = False
@@ -185,10 +186,10 @@ class Game:
             mouse_coords = pygame.mouse.get_pos()
 
             if self._btn_restart.is_mouse_over(mouse_coords) and click:
-                return True
+                return 'RESTART', True
 
             if self._btn_quit.is_mouse_over(mouse_coords) and click:
-                return False
+                return 'QUIT', False
 
             if self._setup_over:
                 for x in range(10):
@@ -220,15 +221,21 @@ class Game:
                 self.setup(mouse_coords, setup_horizontal)
             else:
                 if self._player_good_shots == self._good_shots_to_win:
-                    print('YOU WON')
-                    pygame.display.update()
+                    if self._difficulty == TEST:
+                        return YOU_WON_MESSAGE, False
+
                     pygame.time.wait(5000)
-                    return True
+                    print(YOU_WON_MESSAGE)
+                    pygame.display.update()
+                    return YOU_WON_MESSAGE, True
                 elif self._computer_good_shots == self._good_shots_to_win:
-                    print('COMPUTER WON')
+                    if self._difficulty == TEST:
+                        return COMPUTER_WON_MESSAGE, False
+
+                    print(COMPUTER_WON_MESSAGE)
                     pygame.display.update()
                     pygame.time.wait(5000)
-                    return True
+                    return COMPUTER_WON_MESSAGE, True
                 else:
                     self.play()
             self._latest_clicked_field = None

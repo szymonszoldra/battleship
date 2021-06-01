@@ -40,7 +40,7 @@ class Application:
         should_start_new_game = True
         while should_start_new_game:
             game = Game(self._WINDOW, self._difficulty)
-            should_start_new_game = game.start()
+            _, should_start_new_game = game.start()
 
     def run(self) -> None:
         run = True
