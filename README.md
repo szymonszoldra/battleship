@@ -1,6 +1,8 @@
 # Battleship
 
-Project for Python class at Cracow University of Science WORK IN PROGRESS
+Project for Python class at Cracow University of Science
+
+![Przebieg gry](docs/game.gif)
 
 ### Installation
 
@@ -22,4 +24,14 @@ cd battleship
 py -3 -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### Run
+to run tests
+```shell
+python -m unittest -v
+```
+to play
+```shell
+python main.py
 ```
