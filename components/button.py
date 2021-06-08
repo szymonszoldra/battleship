@@ -1,6 +1,7 @@
 import pygame
 from constants.colors import WHITE
 from constants.window import OUTLINE_THICKNESS
+from constants.fonts import FONT_PATH
 
 
 class Button:
@@ -38,7 +39,7 @@ class Button:
             pygame.draw.rect(window, self._color, (self._x, self._y, self._width, self._height), 0)
 
         if self._text != '' and self._show_text:
-            font = pygame.font.SysFont('Cascadia Code', font_size)
+            font = pygame.font.Font(FONT_PATH, font_size)
             text = font.render(self._text, True, WHITE)
             window.blit(text, (self._x + (self._width // 2 - text.get_width() // 2),
                                self._y + (self._height // 2 - text.get_height() // 2)))

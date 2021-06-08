@@ -6,7 +6,7 @@ from typing import Union
 
 from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE, OUTLINE_THICKNESS_THICK
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
-from constants.fonts import FONT
+from constants.fonts import FONT, FONT_PATH
 from constants.difficulty import EASY, HARD, TEST
 from constants.messages import COMPUTER_WON_MESSAGE, YOU_WON_MESSAGE
 
@@ -191,7 +191,7 @@ class Game:
             WIDTH // 2 - 400 + OUTLINE_THICKNESS_THICK, HEIGHT // 2 - 200 + OUTLINE_THICKNESS_THICK,
             800 - OUTLINE_THICKNESS_THICK * 2,
             400 - OUTLINE_THICKNESS_THICK * 2), 0)
-        font = pygame.font.SysFont('Cascadia Code', 80)
+        font = pygame.font.Font(FONT_PATH, 80)
         text = font.render(message, True, WHITE)
         self._WINDOW.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2))
         pygame.display.update()
