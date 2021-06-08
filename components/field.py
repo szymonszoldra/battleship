@@ -4,9 +4,11 @@ from constants.colors import WHITE, RED, GREEN, BLUE
 
 from exceptions.game import FieldAlreadyShotException
 
+from typing import Tuple
+
 
 class Field(Button):
-    def __init__(self, color: tuple[int, int, int], x: int, y: int, width: int, height: int, coords: tuple[int, int],
+    def __init__(self, color: Tuple[int, int, int], x: int, y: int, width: int, height: int, coords: Tuple[int, int],
                  computer_field: bool,
                  text: str = '',
                  cartesian_coordinates: bool = True) -> None:
@@ -22,7 +24,7 @@ class Field(Button):
         if self._computer_field:
             self.set_show_text(False)
 
-    def get_coords(self) -> tuple[int, int]:
+    def get_coords(self) -> Tuple[int, int]:
         return self._coords
 
     def draw_as_computer_field(self, window) -> None:

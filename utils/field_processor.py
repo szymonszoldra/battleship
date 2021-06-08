@@ -1,21 +1,22 @@
 import random
 from components.field import Field
+from typing import List, Tuple
 
 import itertools
 
 
 class FieldProcessor:
-    def __init__(self, fields: list[list[Field]]) -> None:
+    def __init__(self, fields: List[List[Field]]) -> None:
         self._fields = fields
 
-    def get_prevented_fields(self) -> list[tuple[int, int]]:
+    def get_prevented_fields(self) -> List[Tuple[int, int]]:
         return list(map(lambda field: field.get_coords(), filter(lambda f: not f.can_field_be_chosen(),
                                                                  itertools.chain.from_iterable(self._fields))))
 
-    def is_field_prevented(self, field: tuple[int, int]) -> bool:
+    def is_field_prevented(self, field: Tuple[int, int]) -> bool:
         return field in self.get_prevented_fields()
 
-    def can_ship_fit(self, starting_pair: tuple[int, int], length: int, horizontal: bool) -> bool:
+    def can_ship_fit(self, starting_pair: Tuple[int, int], length: int, horizontal: bool) -> bool:
         unavailable_fields = self.get_prevented_fields()
         x, y = starting_pair
         if horizontal:
@@ -31,7 +32,7 @@ class FieldProcessor:
                 y += 1
             return True
 
-    def process_horizontal(self, pair: tuple[int, int], size: int) -> None:
+    def process_horizontal(self, pair: Tuple[int, int], size: int) -> None:
         x, y = pair
         if x != 0:
             if y != 0:
@@ -56,7 +57,7 @@ class FieldProcessor:
             if y != 9:
                 self._fields[x][y + 1].prevent_selection()
 
-    def process_vertical(self, pair: tuple[int, int], size: int) -> None:
+    def process_vertical(self, pair: Tuple[int, int], size: int) -> None:
         x, y = pair
         if y != 0:
             if x != 0:

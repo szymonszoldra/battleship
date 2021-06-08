@@ -2,7 +2,7 @@ import pygame
 import itertools
 from functools import reduce
 from random import random, randint
-from typing import Union
+from typing import Union, Tuple
 
 from constants.window import FPS, WIDTH, HEIGHT, FIELD_SIZE, OUTLINE_THICKNESS_THICK
 from constants.colors import BUTTON_COLOR, BACKGROUND_COLOR, WHITE
@@ -30,7 +30,7 @@ class Game:
 
         self.process_computer_fields()
         self._ships_to_allocate = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
-        self._latest_clicked_field: Union[tuple[int, int], None] = None
+        self._latest_clicked_field: Union[Tuple[int, int], None] = None
 
         # randomly selected whether the first move belongs to the player or to the computer
         self._is_player_move: bool = random() < 0.5
@@ -77,7 +77,7 @@ class Game:
             for field in row:
                 field.set_temporary_mouse_over(False)
 
-    def setup_horizontal(self, coords: tuple[int, int], size: int) -> None:
+    def setup_horizontal(self, coords: Tuple[int, int], size: int) -> None:
         x, y = coords
         if x > 10 - size:
             return
@@ -95,7 +95,7 @@ class Game:
             field_processor.process_horizontal(self._latest_clicked_field, size)
             self._ships_to_allocate.pop(0)
 
-    def setup_vertical(self, coords: tuple[int, int], size: int) -> None:
+    def setup_vertical(self, coords: Tuple[int, int], size: int) -> None:
         x, y = coords
         if y > 10 - size:
             return
@@ -113,7 +113,7 @@ class Game:
             field_processor.process_vertical(self._latest_clicked_field, size)
             self._ships_to_allocate.pop(0)
 
-    def setup(self, mouse_coords: tuple[int, int], horizontal: bool) -> None:
+    def setup(self, mouse_coords: Tuple[int, int], horizontal: bool) -> None:
         if len(self._ships_to_allocate) == 0:
             for field in itertools.chain.from_iterable(self._player_fields):
                 field.reset_field_after_setup()
@@ -197,7 +197,7 @@ class Game:
         pygame.display.update()
         pygame.time.wait(1500)
 
-    def start(self) -> tuple[str, bool]:
+    def start(self) -> Tuple[str, bool]:
         run = True
         clock = pygame.time.Clock()
         click = False
